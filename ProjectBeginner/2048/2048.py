@@ -3,22 +3,37 @@ import tkinter as tk
 import settings as setting
 
 root = tk.Tk()
+# Créer un cadre pour la grille
+grid_frame = tk.Frame(root, bg="#92877D")
+grid_frame.grid(padx=30, pady=10)
 
 def boucle_jeu():
 	genererMap()
 	root.after(setting.IPS,boucle_jeu)
 
 def on_left_arrow(event):
-	print("left")
+	lg.moveElementLeft()
+	lg.generationElement2()
+	score()
+	genererMap()
 
 def on_right_arrow(event):
 	lg.moveElementRight()
+	lg.generationElement2()
+	score()
+	genererMap()
 
 def on_up_arrow(event):
-	print("up")
+	lg.moveElementUp()
+	lg.generationElement2()
+	score()
+	genererMap()
 
 def on_down_arrow(event):
-	print("down")
+	lg.moveElementDown()
+	lg.generationElement2()
+	score()
+	genererMap()
 
 def controle():
 	root.bind("<Left>",on_left_arrow)
@@ -29,18 +44,27 @@ def controle():
 def genererMap():
 	for i in range(len(setting.GRILLEJEUX)):
 		for j in range(len(setting.GRILLEJEUX[i])):
-			label = tk.Label(root, text=str(setting.GRILLEJEUX[i][j] if setting.GRILLEJEUX[i][j] != 0 else ""), bg="#9E948A" , width=10, height=5 )
-			label.grid(row=i,column=j,padx=5,pady=5)
+			label = tk.Label(grid_frame, text=str(setting.GRILLEJEUX[i][j] if setting.GRILLEJEUX[i][j] != 0 else ""), bg=setting.couleur[setting.GRILLEJEUX[i][j]], fg="#fff", width=10, height=5, font=("Arial", 10))
+			label.grid(row=i+1, column=j+1, padx=2, pady=2)
+
+def score():
+	score = 0
+	for row in setting.GRILLEJEUX:
+		score += sum(row)
+	print(score)
+	Label = tk.Label(grid_frame,text="Score : "+str(score), bg="#92877D")
+	Label.grid(row=0, column=0, columnspan=len(setting.GRILLEJEUX),pady = 20,padx=20)
 
 def init_game_window():
 	root.title("2048")
-	root.geometry("350x400")
+	root.geometry("420x450")
 	root.config(bg='#92877D')
+	lg.generationElement2()
 
 
 if __name__ == '__main__':
 	init_game_window()
-	lg.generationElement2()
 	controle()
-	boucle_jeu()
+	score()
+	genererMap()
 	root.mainloop()	
